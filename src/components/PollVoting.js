@@ -1,3 +1,5 @@
+// 투표 참여 폼 코드
+
 import React, { useState } from 'react';
 
 const PollVoting = ({ options, onVote }) => {
@@ -24,6 +26,7 @@ const PollVoting = ({ options, onVote }) => {
             checked={selectedOption === option.id}
             onChange={() => setSelectedOption(option.id)}
             required
+            style={{marginRight: '10px'}}
           />
           <label htmlFor={`option-${option.id}`}>{option.text}</label>
         </div>
@@ -39,7 +42,8 @@ const formStyle = {
     border: '1px solid #ccc',
     borderRadius: '8px',
     maxWidth: '400px',
-    margin: '20px 0'
+    margin: '20px 0',
+    textAlign: 'left'
 };
 
 const optionStyle = {
