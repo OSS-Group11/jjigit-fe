@@ -1,3 +1,5 @@
+// 투표 생성 폼 코드
+
 import React, { useState } from 'react';
 
 const PollCreationForm = ({ onCreatePoll }) => {
@@ -34,18 +36,22 @@ const PollCreationForm = ({ onCreatePoll }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} style={{textAlign: 'left', maxWidth: '500px', margin: '0 auto'}}>
       <h2>새 투표 만들기</h2>
-      <input
-        type="text"
-        placeholder="투표 제목을 입력하세요"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        required
-      />
-      <button type="button" onClick={suggestTopic}>
-        💡 LLM 주제 제안 받기
-      </button>
+      <div style={{marginBottom: '15px'}}>
+        <input
+          type="text"
+          placeholder="투표 제목을 입력하세요"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          required
+          style={inputStyle}
+        />
+        <button type="button" onClick={suggestTopic} style={suggestButtonStyle}>
+          💡 LLM 주제 제안 받기
+        </button>
+      </div>
+
 
       {options.map((option, index) => (
         <input
@@ -55,11 +61,12 @@ const PollCreationForm = ({ onCreatePoll }) => {
           value={option}
           onChange={(e) => handleOptionChange(index, e.target.value)}
           required
+          style={{...inputStyle, display: 'block', marginBottom: '10px'}}
         />
       ))}
-      <button type="button" onClick={addOption}>+ 옵션 추가</button>
+      <button type="button" onClick={addOption} style={addOptionStyle}>+ 옵션 추가</button>
 
-      <div>
+      <div style={{marginTop: '20px'}}>
         <input
           type="checkbox"
           id="private"
@@ -69,9 +76,50 @@ const PollCreationForm = ({ onCreatePoll }) => {
         <label htmlFor="private">비공개 투표</label>
       </div>
 
-      <button type="submit">투표 생성</button>
+      <button type="submit" style={submitButtonStyle}>투표 생성</button>
     </form>
   );
+};
+
+// 간단한 인라인 스타일
+const inputStyle = {
+    padding: '10px',
+    fontSize: '1em',
+    border: '1px solid #ccc',
+    borderRadius: '4px',
+    display: 'flex',
+    flexDirection: 'column',
+    boxSizing: 'border-box',
+    marginRight: '10px'
+};
+const suggestButtonStyle = {
+    padding: '10px 15px',
+    fontSize: '1em',
+    cursor: 'pointer',
+    backgroundColor: '#ffc107',
+    border: 'none',
+    borderRadius: '4px',
+    fontWeight: 'bold'
+};
+const addOptionStyle = {
+    padding: '8px 15px',
+    fontSize: '0.9em',
+    cursor: 'pointer',
+    backgroundColor: '#007bff',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    marginTop: '10px'
+};
+const submitButtonStyle = {
+    padding: '10px 20px',
+    fontSize: '1.1em',
+    cursor: 'pointer',
+    backgroundColor: '#28a745',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    marginTop: '20px'
 };
 
 export default PollCreationForm;
