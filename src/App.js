@@ -1,3 +1,6 @@
+//APP.js: 메인 라우팅 코드
+
+// src/App.js
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
@@ -5,7 +8,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import HomePage from './pages/HomePage';
 import CreatePollPage from './pages/CreatePollPage';
-import PollPage from './pages/PollPage'; // 이전에 제공된 투표 참여/결과 페이지
+import PollPage from './pages/PollPage';
 
 function App() {
   return (
@@ -31,10 +34,9 @@ function App() {
           </Routes>
         </main>
         
-        [cite_start]{/* 프로젝트 라이선스에 따라 푸터 추가 (MIT License) [cite: 68] */}
         <footer style={footerStyle}>
-            <p>© 2025 Jjigit Project. [cite_start]Released under the MIT License. [cite: 68]</p>
-            [cite_start]<p>Group 11: 황혜림, 정상희, 김수연, 장형준 [cite: 3, 4, 5, 6]</p>
+            <p>© 2025 Jjigit Project. Released under the MIT License.</p>
+            <p>Group 11: 황혜림, 정상희, 김수연, 장형준</p>
         </footer>
       </div>
     </Router>
