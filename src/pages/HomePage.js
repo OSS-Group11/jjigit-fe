@@ -1,3 +1,5 @@
+// 메인 랜딩 페이지 코드
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 
@@ -8,15 +10,15 @@ const HomePage = () => {
       <p>
         복잡한 설문 도구와 광고가 많은 서비스는 이제 그만!
         Jjigit은 누구나 쉽고 빠르게 투표를 만들고, 링크로 공유하며, 결과를 실시간 차트로 확인할 수 있는
-        [cite_start]**완전한 오픈소스** 솔루션입니다. [cite: 11, 14, 48]
+        **완전한 오픈소스** 솔루션입니다.
       </p>
       
       <div style={featureBoxStyle}>
         <h3>주요 특징</h3>
         <ul>
-          [cite_start]<li>✔️ **LLM 기반 주제 제안**을 통해 투표 생성이 편리합니다. [cite: 15, 49]</li>
-          [cite_start]<li>✔️ 모든 기능이 **무료**이며 **광고가 없습니다**. [cite: 14]</li>
-          [cite_start]<li>✔️ 링크 하나로 투표 참여와 결과 공유가 간편합니다. [cite: 34, 47]</li>
+          <li>✔️ **LLM 기반 주제 제안**을 통해 투표 생성이 편리합니다.</li>
+          <li>✔️ 모든 기능이 **무료**이며 **광고가 없습니다**.</li>
+          <li>✔️ 링크 하나로 투표 참여와 결과 공유가 간편합니다.</li>
         </ul>
       </div>
 
