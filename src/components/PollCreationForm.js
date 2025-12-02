@@ -1,6 +1,7 @@
 // 투표 생성 폼 코드
 
 import React, { useState } from 'react';
+import axios from 'axios';
 
 const PollCreationForm = ({ onCreatePoll }) => {
   const [title, setTitle] = useState('');
@@ -27,12 +28,21 @@ const PollCreationForm = ({ onCreatePoll }) => {
     console.log('Poll Data:', newPoll);
   };
 
-  // LLM 기반 주제 제안을 요청하는 더미 함수
+  // LLM 기반 주제 제안을 요청하는 함수
   const suggestTopic = async () => {
-    console.log('LLM-based Topic Suggestion requested...');
-    // API 호출을 통해 AI 서버에서 주제 제안을 받습니다.
-    const suggestedTitle = "오늘 점심 메뉴 투표"; // 예시 데이터
-    setTitle(suggestedTitle);
+    try {
+      console.log('LLM-based Topic Suggestion requested...');
+
+      // AI 서버에서 주제 제안 받기
+      const response = await axios.post('http://localhost:8000/api/generate');
+      const suggestedTitle = response.data.topic;
+
+      setTitle(suggestedTitle);
+      console.log('Generated topic:', suggestedTitle);
+    } catch (error) {
+      console.error('Failed to get AI suggestion:', error);
+      alert('AI 주제 생성 중 오류가 발생했습니다. AI 서비스가 실행 중인지 확인해주세요.');
+    }
   };
 
   return (
