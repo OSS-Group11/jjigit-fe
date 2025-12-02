@@ -1,31 +1,67 @@
 // src/components/Header.js
-
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const Header = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const isActive = (path) =>
+    location.pathname === path ||
+    (path === "/community" && location.pathname.startsWith("/community"));
+
   return (
     <header className="fixed top-0 w-full z-50 backdrop-blur-md bg-white/70 border-b border-gray-200/50">
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-        <Link
-          to="/"
-          className="text-2xl font-bold tracking-wider bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent"
-        >
-          JJIGIT
-        </Link>
-        <div className="flex items-center gap-6">
+
+        {/* 좌측: 홈/커뮤니티 버튼 + JJIGIT 로고 */}
+        <div className="flex items-center gap-4">
+
+          {/* 홈 / 커뮤니티 */}
+          <div className="flex gap-2 text-xs">
+            <button
+              onClick={() => navigate("/")}
+              className={`px-2 py-1 rounded transition ${
+                isActive("/") ? "bg-gray-200" : "hover:bg-gray-100"
+              }`}
+            >
+              홈
+            </button>
+
+            <button
+              onClick={() => navigate("/community")}
+              className={`px-2 py-1 rounded transition ${
+                isActive("/community") ? "bg-gray-200" : "hover:bg-gray-100"
+              }`}
+            >
+              커뮤니티
+            </button>
+          </div>
+
+          {/* 기존 JJIGIT 로고 유지 */}
           <Link
-            to="/create"
-            className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+            to="/"
+            className="text-2xl font-bold tracking-wider bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent"
           >
-            새 투표 만들기
+            JJIGIT
           </Link>
+        </div>
+
+        {/* 우측: 공지사항 / 로그인 */}
+        <div className="flex items-center gap-6 text-sm">
           <Link
-            to="/login"
+            to="/notice"
+            className="text-gray-600 hover:text-gray-900 transition"
+          >
+            공지사항
+          </Link>
+
+          <button
+            onClick={() => navigate("/login")}
             className="px-5 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-full text-sm font-medium hover:shadow-lg hover:scale-105 transition-all"
           >
             로그인
-          </Link>
+          </button>
         </div>
       </div>
     </header>
