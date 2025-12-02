@@ -1,4 +1,18 @@
+/*React 프로젝트에서 Tailwind는 보통 이 파일을 수정해서 활성화한다.*/
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 2. 전역 스타일 추가 */
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* 배경에 부드러운 파스텔톤 그라데이션 적용 */
+  background: linear-gradient(to bottom right, #f8fafc, #eff6ff, #eef2ff);
+  min-height: 100vh;
 }
