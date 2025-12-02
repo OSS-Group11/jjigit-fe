@@ -1,0 +1,29 @@
+/* 푸터 스타일 */
+.app-footer {
+
+    text-align: center;
+
+    padding: 20px;
+    margin-top: 50px;
+
+    /* 👈 [수정] 푸터 영역 자체를 중앙에 제한 */
+    width: 100%;             /* 너비는 기본적으로 100% */
+    margin-left: auto;       /* 수평 중앙 정렬 */
+    margin-right: auto;      /* 수평 중앙 정렬 */
+
+    border-top: 1px solid #ccc;
+    
+    color: #555;
+    font-size: 0.9em;
+}
+
+/* 최소 높이 설정으로 푸터 고정 */
+.App {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex-grow: 1; /* 메인 컨텐츠가 남은 공간을 차지하도록 하여 푸터를 아래로 밀어냄 */
+}
