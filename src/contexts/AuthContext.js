@@ -26,16 +26,21 @@ export function AuthProvider({ children }) {
    * ----------------------------------------- */
   const validateToken = async (token) => {
     try {
-      const response = await fetch("/api/auth/validate", {
+      const response = await fetch("http://3.37.253.134:8080/api/auth/validate", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
       if (response.ok) {
-        const userData = await response.json();
-        setUser(userData);
-        setIsAuthenticated(true);
+        const data = await response.json();
+        // 백엔드 응답: { isValid: true/false, userId: number }
+        if (data.isValid && data.userId) {
+          setUser({ userId: data.userId });
+          setIsAuthenticated(true);
+        } else {
+          localStorage.removeItem(TOKEN_KEY);
+        }
       } else {
         localStorage.removeItem(TOKEN_KEY);
       }
