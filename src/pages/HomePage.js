@@ -52,12 +52,8 @@ const HomePage = () => {
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
           <h1 className="text-3xl md:text-5xl font-bold leading-snug">
-            팀의 선택을 빠르게 모으는
-            <br />
-            실시간 투표 플랫폼{" "}
-            <span className="bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
-              JJIGIT
-            </span>
+            팀의 선택을 빠르게!<br />
+            실시간 투표 플랫폼
           </h1>
 
           <p className="text-gray-600 text-base md:text-lg leading-relaxed">
