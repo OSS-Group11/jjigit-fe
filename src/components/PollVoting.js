@@ -1,6 +1,6 @@
 // 투표 참여 폼 코드
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 const PollVoting = ({ options, onVote }) => {
   const [selectedOption, setSelectedOption] = useState(null);
@@ -15,49 +15,46 @@ const PollVoting = ({ options, onVote }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={formStyle}>
-      {options.map((option) => (
-        <div key={option.id} style={optionStyle}>
-          <input
-            type="radio"
-            id={`option-${option.id}`}
-            name="poll-option"
-            value={option.id}
-            checked={selectedOption === option.id}
-            onChange={() => setSelectedOption(option.id)}
-            required
-            style={{marginRight: '10px'}}
-          />
-          <label htmlFor={`option-${option.id}`}>{option.text}</label>
-        </div>
-      ))}
-      <button type="submit" style={voteButtonStyle}>투표하기</button>
+    <form onSubmit={handleSubmit} className="bg-white border-2 border-gray-200 rounded-xl p-6 max-w-2xl">
+      <div className="space-y-3">
+        {options.map((option) => {
+          const optionId = option.optionId || option.id;
+          const optionText = option.optionText || option.text;
+
+          return (
+            <label
+              key={optionId}
+              htmlFor={`option-${optionId}`}
+              className={`flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all ${
+                selectedOption === optionId
+                  ? 'border-purple-600 bg-purple-50'
+                  : 'border-gray-200 hover:border-purple-300 hover:bg-gray-50'
+              }`}
+            >
+              <input
+                type="radio"
+                id={`option-${optionId}`}
+                name="poll-option"
+                value={optionId}
+                checked={selectedOption === optionId}
+                onChange={() => setSelectedOption(optionId)}
+                required
+                className="w-5 h-5 text-purple-600 focus:ring-purple-500"
+              />
+              <span className="ml-3 text-base font-medium text-gray-800">{optionText}</span>
+            </label>
+          );
+        })}
+      </div>
+
+      <button
+        type="submit"
+        className="w-full mt-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold rounded-lg shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all"
+      >
+        투표하기
+      </button>
     </form>
   );
-};
-
-// 간단한 인라인 스타일
-const formStyle = {
-    padding: '20px',
-    border: '1px solid #ccc',
-    borderRadius: '8px',
-    maxWidth: '400px',
-    margin: '20px 0',
-    textAlign: 'left'
-};
-
-const optionStyle = {
-    marginBottom: '10px'
-};
-
-const voteButtonStyle = {
-    backgroundColor: '#4CAF50',
-    color: 'white',
-    padding: '10px 20px',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
-    marginTop: '15px'
 };
 
 export default PollVoting;
