@@ -7,7 +7,7 @@ const api = axios.create({
 
 // 요청마다 JWT 토큰 자동 첨부
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("jwtToken");
+  const token = localStorage.getItem("jjigit-token");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
