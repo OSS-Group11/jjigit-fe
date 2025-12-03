@@ -17,27 +17,35 @@ const blocks = [
   },
 ];
 
+// FeatureSections.js
 function FeatureSections() {
   return (
-    <section className="px-8 pb-12 space-y-4">
-      {blocks.map((b) => (
-        <div
-          key={b.title}
-          className="border rounded-lg p-4 flex items-start gap-4 bg-white shadow-sm"
-        >
-          <div className="text-2xl">{b.title.split(" ")[0]}</div>
-          <div>
-            <h3 className="font-semibold text-sm md:text-base">
-              {b.title}
-            </h3>
-            <p className="text-gray-600 text-xs md:text-sm mt-1">
-              {b.desc}
-            </p>
+    <section className="w-full bg-gray-50 py-16">
+      <div className="max-w-5xl mx-auto space-y-6">
+        {blocks.map((b) => (
+          <div
+            key={b.title}
+            className="w-full min-h-[180px] md:min-h-[220px]
+                       border rounded-2xl p-6 md:p-8
+                       flex items-start gap-4 bg-white shadow-sm"
+          >
+            <div className="text-3xl md:text-4xl">
+              {b.title.split(' ')[0]}
+            </div>
+            <div>
+              <h3 className="font-semibold text-base md:text-lg mb-1">
+                {b.title}
+              </h3>
+              <p className="text-gray-600 text-sm md:text-base">
+                {b.desc}
+              </p>
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </section>
   );
 }
+
 
 export default FeatureSections;
