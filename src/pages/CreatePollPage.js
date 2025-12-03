@@ -8,38 +8,37 @@ const CreatePollPage = () => {
   const navigate = useNavigate();
   const [shareLink, setShareLink] = useState(null);
 
-  // 투표 생성 API 처리 (기존 handleCreatePoll + FormData 로직 통합)
+  // 투표 생성 API 처리 (백엔드 API 스펙에 맞게 수정)
   const handleCreatePoll = async (formValues) => {
-    const { title, description, options, imageFile, isPublic } = formValues;
+    const { title, description, options, isPublic } = formValues;
 
     try {
       console.log("Creating poll with data:", formValues);
 
-      // --- FormData 구성 ---
-      const formData = new FormData();
-      formData.append("title", title);
-      formData.append("description", description || "");
-      formData.append("isPublic", String(isPublic));
+      // 빈 옵션 제거
+      const validOptions = options.filter((o) => o.trim());
 
-      // 옵션 추가 (빈 옵션 제거)
-      options
-        .filter((o) => o.trim())
-        .forEach((o, index) => {
-          formData.append(`options[${index}]`, o);
-        });
-
-      // 이미지 존재 시 파일 추가
-      if (imageFile) {
-        formData.append("image", imageFile);
+      if (validOptions.length < 2) {
+        alert("투표는 최소 2개 이상의 선택지가 필요합니다.");
+        return;
       }
 
-      // --- 백엔드로 전송 ---
-      const response = await api.post("/api/polls", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      // 백엔드 API 요청 형식: { title, description, isPublic, options: [{optionText, optionOrder}] }
+      const requestBody = {
+        title,
+        description: description || "",
+        isPublic,
+        options: validOptions.map((optionText, index) => ({
+          optionText,
+          optionOrder: index + 1
+        })),
+      };
+
+      // 백엔드로 전송
+      const response = await api.post("/api/polls", requestBody);
 
       const newPoll = response.data;
-      const newPollId = newPoll.id;
+      const newPollId = newPoll.pollId;
 
       // 공유 링크 저장
       const link = `${window.location.origin}/poll/${newPollId}`;
