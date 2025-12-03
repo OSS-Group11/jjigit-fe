@@ -1,31 +1,31 @@
-import React, { useState } from 'react';
-import api from '../api/axios';      // ✅ 변경점: 커스텀 axios 사용
+import { useState } from 'react';
+import api from '../api/axios';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();   // ✅ 로그인 성공 후 이동용
+  const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      // ✅ 실제 백엔드 로그인 API 호출 (경로는 Swagger 기준으로 확인)
       const response = await api.post('/api/auth/login', {
         username,
         password,
       });
 
-      // 백엔드 응답 구조에 맞게 수정 (예: { token: "..."} 또는 { accessToken: "..." })
-      const token = response.data.token;   // 필요시 키 이름 확인
+      const { token, userId } = response.data;
 
-      // ✅ 토큰 저장
-      localStorage.setItem('jwtToken', token);
+      // AuthContext의 login 함수 호출하여 상태 업데이트
+      login(token, { userId });
 
       alert('로그인 성공!');
-      navigate('/');   // 혹은 '/create-poll' 등 원하는 경로
+      navigate('/');
 
     } catch (error) {
       console.error('Login failed:', error);
@@ -49,10 +49,12 @@ const LoginPage = () => {
             </label>
             <input
               id="username"
+              name="username"
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
+              autoComplete="username"
               className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 dark:text-white transition duration-150"
               placeholder="아이디를 입력하세요"
             />
@@ -65,10 +67,12 @@ const LoginPage = () => {
             </label>
             <input
               id="password"
+              name="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              autoComplete="current-password"
               className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 dark:text-white transition duration-150"
               placeholder="비밀번호를 입력하세요"
             />
