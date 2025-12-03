@@ -21,14 +21,27 @@ export default function CommunityPage() {
   async function fetchPolls() {
     setLoading(true);
     try {
-      // 우선 프로젝트 백엔드 API 규칙에 따라 경로 맞춤 (예: /api/polls or /polls)
-      // axios 인스턴스의 baseURL을 고려하여 경로만 작성
-      const res = await axios.get(`/polls`, {
-        params: { status: filterStatus, sort: sortBy },
+      // 백엔드 API: GET /api/polls?page=0&size=20&sort=createdAt,desc
+      // sortBy를 백엔드 형식으로 변환
+      let sortParam = "createdAt,desc"; // 기본값
+      if (sortBy === "recent") {
+        sortParam = "createdAt,desc";
+      } else if (sortBy === "popular") {
+        sortParam = "totalVotes,desc"; // 백엔드에 totalVotes 필드가 있다면
+      } else if (sortBy === "votes") {
+        sortParam = "totalVotes,desc";
+      }
+
+      const res = await axios.get(`/api/polls`, {
+        params: {
+          page: 0,
+          size: 20,
+          sort: sortParam
+        },
       });
 
-      // 기대되는 형태: 배열 또는 { polls: [...] }
-      const data = Array.isArray(res.data) ? res.data : res.data.polls ?? res.data;
+      // 백엔드 응답 형태: { polls: [...], currentPage, totalPages, ... }
+      const data = res.data.polls || [];
       setPolls(data);
     } catch (err) {
       console.error("Failed to fetch polls from API:", err);
@@ -211,14 +224,19 @@ function getExamplePolls() {
 
 /* ---------- 헬퍼: API에서 온 poll 구조 정규화 ---------- */
 function normalizePoll(p) {
-  // 백엔드 응답 필드명이 다를 수 있으니 안전하게 매핑
+  // 백엔드 응답 필드명을 프론트엔드 형식으로 매핑
+  // 백엔드 응답: { pollId, title, isPublic, options: [{optionId, optionText, optionOrder, voteCount}], creatorId, createdAt, totalVotes }
   return {
-    id: p.id ?? p.pollId,
-    title: p.title ?? p.name ?? "제목 없음",
-    description: p.description ?? p.body ?? "",
-    thumbnailUrl: p.thumbnailUrl ?? p.thumbnail ?? p.image ?? null,
-    isPublic: typeof p.isPublic === "boolean" ? p.isPublic : !(p.private ?? false),
-    totalVotes: p.totalVotes ?? p.votesCount ?? Object.values(p.votes || {}).reduce((a,b)=>a+b,0),
-    ...p,
+    id: p.pollId ?? p.id,
+    title: p.title ?? "제목 없음",
+    description: p.description ?? "",
+    thumbnailUrl: null, // 백엔드에 이미지 필드 없음
+    isPublic: p.isPublic ?? true,
+    totalVotes: p.totalVotes ?? 0,
+    createdAt: p.createdAt,
+    author: p.creatorId ? `User ${p.creatorId}` : "익명",
+    options: p.options ?? [],
+    status: "active", // 백엔드에 status 필드가 없으면 기본값
+    totalComments: 0, // 백엔드 응답에 없는 필드
   };
 }
