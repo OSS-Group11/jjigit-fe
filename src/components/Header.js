@@ -16,7 +16,14 @@ const Header = () => {
 
         {/* 좌측: 홈/커뮤니티 버튼 + JJIGIT 로고 */}
         <div className="flex items-center gap-4">
-
+          {/* 기존 JJIGIT 로고 유지 */}
+          <Link
+            to="/"
+            className="text-2xl font-bold tracking-wider bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent"
+          >
+            JJIGIT
+          </Link>
+          
           {/* 홈 / 커뮤니티 */}
           <div className="flex gap-2 text-xs">
             <button
@@ -38,23 +45,11 @@ const Header = () => {
             </button>
           </div>
 
-          {/* 기존 JJIGIT 로고 유지 */}
-          <Link
-            to="/"
-            className="text-2xl font-bold tracking-wider bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent"
-          >
-            JJIGIT
-          </Link>
+          
         </div>
 
         {/* 우측: 공지사항 / 로그인 */}
         <div className="flex items-center gap-6 text-sm">
-          <Link
-            to="/notice"
-            className="text-gray-600 hover:text-gray-900 transition"
-          >
-            공지사항
-          </Link>
 
           <button
             onClick={() => navigate("/login")}
