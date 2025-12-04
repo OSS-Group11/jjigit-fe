@@ -26,7 +26,7 @@ export function AuthProvider({ children }) {
    * ----------------------------------------- */
   const validateToken = async (token) => {
     try {
-      const response = await fetch("https://3.37.253.134:8080/api/auth/validate", {
+      const response = await fetch("https://3.37.253.134/api/auth/validate", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
