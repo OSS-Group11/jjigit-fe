@@ -102,25 +102,6 @@ const PollPage = () => {
     }
   };
 
-  // 5) 댓글 수정
-  const handleUpdateComment = async (commentId, content) => {
-    try {
-      const res = await api.put(
-        `/api/polls/${pollId}/comments/${commentId}`,
-        { content }
-      );
-      const updated = res.data;
-      setComments((prev) =>
-        prev.map((c) =>
-          c.commentId === commentId ? { ...c, ...updated } : c
-        )
-      );
-    } catch (e) {
-      console.error(e);
-      alert("댓글 수정 중 오류가 발생했습니다.");
-    }
-  };
-
   if (!poll) return <div>로딩 중...</div>;
 
   return (
@@ -139,24 +120,19 @@ const PollPage = () => {
         </>
       )}
 
-      {/* 옵션별 댓글 스레드 */}
+      {/* 전체 댓글만 표시 */}
       <div className="mt-8">
         <h3 className="text-lg font-semibold mb-3">댓글</h3>
-        {poll.options && poll.options.length > 0 && (
-          <CommentList
-            options={poll.options}
-            comments={comments}
-            onCreate={handleAddComment}
-            onUpdate={handleUpdateComment}
-          />
-        )}
 
-        {/* 전체 투표에 대한 일반 댓글만 따로 쓰고 싶다면 아래 폼 그대로 유지 가능 */}
-        <div className="mt-4">
-          <CommentForm onSubmit={(content) =>
-            handleAddComment({ optionId: null, content })
-          } />
-        </div>
+        {/* 댓글 목록 */}
+        <CommentList
+          comments={comments.filter(c => c.optionId == null)}
+        />
+
+        {/* 댓글 작성 폼 */}
+        <CommentForm onSubmit={(content) =>
+          handleAddComment({ optionId: null, content })
+        } />
 
         <p className="mt-4 text-xs text-gray-500">
           이곳에 LLM 기반 찬반 요약 기능이 추가될 예정입니다.
