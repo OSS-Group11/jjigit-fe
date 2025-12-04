@@ -14,6 +14,7 @@ import PollResultsChart from "../components/PollResultsChart";
 import api from "../api/axios";
 import { Client } from "@stomp/stompjs";
 
+import CommentList from "../components/CommentList";
 import CommentForm from "../components/CommentForm";
 
 const PollPage = () => {
@@ -26,23 +27,16 @@ const PollPage = () => {
   useEffect(() => {
     const fetchPoll = async () => {
       try {
-        // 투표 상세 정보 가져오기
         const pollRes = await api.get(`/api/polls/${pollId}`);
         setPoll(pollRes.data);
 
-        // 투표 여부 확인 (인증 필요)
-        try {
-          const statusRes = await api.get(`/api/polls/${pollId}/voted`);
-          console.log("Vote status response:", statusRes.data);
-          setHasVoted(statusRes.data.hasVoted || false);
-        } catch (err) {
-          // 인증되지 않은 경우 투표 안한 것으로 처리
-          console.log("Vote status check failed:", err.response?.status, err.response?.data);
-          setHasVoted(false);
-        }
+        const statusRes = await api.get(`/api/polls/${pollId}/status`);
+        setHasVoted(statusRes.data.hasVoted);
 
-        // 댓글 목록 가져오기
-        const commentsRes = await api.get(`/api/polls/${pollId}/comments`);
+        const commentsRes = await api.get(
+          `/api/polls/${pollId}/comments`
+        );
+        // swagger: { comments: [...] } 형태라고 가정
         setComments(commentsRes.data.comments || []);
       } catch (e) {
         console.error(e);
@@ -80,141 +74,92 @@ const PollPage = () => {
     try {
       await api.post(`/api/polls/${pollId}/vote`, { optionId });
       setHasVoted(true);
-      // 투표 성공 후 투표 정보 다시 불러오기
-      const pollRes = await api.get(`/api/polls/${pollId}`);
-      setPoll(pollRes.data);
+      // 실제 결과 값은 STOMP로 들어옴
     } catch (error) {
       console.error(error);
-      if (error.response?.status === 401) {
-        alert("투표하려면 로그인이 필요합니다.");
-      } else if (error.response?.status === 409) {
-        alert("이미 이 투표에 참여하셨습니다.");
-      } else {
-        alert("투표 중 오류가 발생했습니다.");
-      }
+      alert("투표 중 오류가 발생했습니다.");
     }
   };
 
-  // 4) 댓글 생성
-  const handleAddComment = async ({ content }) => {
+  // 4) 댓글 생성 (옵션별 + 대댓글)
+  const handleAddComment = async ({
+    optionId,
+    content,
+    parentId = null,
+  }) => {
     try {
       const res = await api.post(`/api/polls/${pollId}/comments`, {
+        optionId,
         content,
+        parentId,
       });
-      // BE가 생성된 댓글을 돌려줌
+      // BE가 생성된 댓글 1개를 돌려준다고 가정
       setComments((prev) => [...prev, res.data]);
     } catch (e) {
       console.error(e);
-      if (e.response?.status === 401) {
-        alert("댓글을 작성하려면 로그인이 필요합니다.");
-      } else {
-        alert("댓글 작성 중 오류가 발생했습니다.");
-      }
+      alert("댓글 작성 중 오류가 발생했습니다.");
     }
   };
 
-  // 5) 댓글 수정 (백엔드 API에 없음 - 추후 구현)
-  // const handleUpdateComment = async (commentId, content) => {
-  //   try {
-  //     const res = await api.put(
-  //       `/api/polls/${pollId}/comments/${commentId}`,
-  //       { content }
-  //     );
-  //     const updated = res.data;
-  //     setComments((prev) =>
-  //       prev.map((c) =>
-  //         c.commentId === commentId ? { ...c, ...updated } : c
-  //       )
-  //     );
-  //   } catch (e) {
-  //     console.error(e);
-  //     alert("댓글 수정 중 오류가 발생했습니다.");
-  //   }
-  // };
+  // 5) 댓글 수정
+  const handleUpdateComment = async (commentId, content) => {
+    try {
+      const res = await api.put(
+        `/api/polls/${pollId}/comments/${commentId}`,
+        { content }
+      );
+      const updated = res.data;
+      setComments((prev) =>
+        prev.map((c) =>
+          c.commentId === commentId ? { ...c, ...updated } : c
+        )
+      );
+    } catch (e) {
+      console.error(e);
+      alert("댓글 수정 중 오류가 발생했습니다.");
+    }
+  };
 
-  if (!poll) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">투표 정보를 불러오는 중...</p>
-        </div>
-      </div>
-    );
-  }
+  if (!poll) return <div>로딩 중...</div>;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      {/* 상단바 여백 */}
-      <div className="pt-20 pb-12">
-        <div className="container mx-auto px-6 max-w-5xl">
-          {/* 헤더 섹션 */}
-          <div className="mb-8">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">{poll.title}</h1>
-            {poll.description && (
-              <p className="text-lg text-gray-600 leading-relaxed">{poll.description}</p>
-            )}
-            <div className="flex items-center gap-4 mt-4 text-sm text-gray-500">
-              <span>총 {poll.totalVotes || 0}명 참여</span>
-              {poll.createdAt && (
-                <span>· {new Date(poll.createdAt).toLocaleDateString()}</span>
-              )}
-            </div>
-          </div>
+    <div className="px-6 py-6">
+      <h1 className="text-xl font-bold mb-2">{poll.title}</h1>
+      <p className="text-sm text-gray-600 mb-4">{poll.description}</p>
+      <hr className="mb-4" />
 
-          {/* 투표/결과 섹션 */}
-          <div className="mb-12">
-            {hasVoted ? (
-              <PollResultsChart pollData={poll} />
-            ) : (
-              <div>
-                <p className="mb-4 text-lg font-medium text-gray-700">선택해 주세요</p>
-                <PollVoting options={poll.options} onVote={handleVote} />
-              </div>
-            )}
-          </div>
+      {/* hasVoted 상태에 따라 투표/결과 화면 분기 */}
+      {hasVoted ? (
+        <PollResultsChart pollData={poll} />
+      ) : (
+        <>
+          <p className="mb-2 text-sm">선택해 주세요.</p>
+          <PollVoting options={poll.options} onVote={handleVote} />
+        </>
+      )}
 
-          {/* 댓글 섹션 */}
-          <div className="bg-white rounded-xl shadow-md border border-gray-200 p-6 md:p-8">
-            <h3 className="text-2xl font-bold text-gray-900 mb-6">
-              댓글 {comments.length > 0 && `(${comments.length})`}
-            </h3>
+      {/* 옵션별 댓글 스레드 */}
+      <div className="mt-8">
+        <h3 className="text-lg font-semibold mb-3">댓글</h3>
+        {poll.options && poll.options.length > 0 && (
+          <CommentList
+            options={poll.options}
+            comments={comments}
+            onCreate={handleAddComment}
+            onUpdate={handleUpdateComment}
+          />
+        )}
 
-            {/* 댓글 목록 */}
-            {comments.length > 0 ? (
-              <div className="space-y-4 mb-6">
-                {comments.map((comment) => (
-                  <div
-                    key={comment.commentId}
-                    className="p-4 border border-gray-200 rounded-lg bg-gray-50 hover:bg-gray-100 transition"
-                  >
-                    <p className="text-base text-gray-800 mb-2">{comment.content}</p>
-                    <div className="text-sm text-gray-500">
-                      {comment.author && `${comment.author} · `}
-                      {comment.createdAt && new Date(comment.createdAt).toLocaleDateString()}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-gray-500 text-center py-8 mb-6">
-                첫 번째 댓글을 작성해보세요!
-              </p>
-            )}
-
-            {/* 댓글 작성 폼 */}
-            <div>
-              <CommentForm onSubmit={(content) => handleAddComment({ content })} />
-            </div>
-
-            {/* LLM 요약 안내 */}
-            <div className="mt-6 p-4 bg-purple-50 border border-purple-200 rounded-lg">
-              <p className="text-sm text-purple-800">
-                💡 <span className="font-semibold">Coming Soon:</span> AI 기반 찬반 의견 요약 기능이 추가될 예정입니다.
-              </p>
-            </div>
-          </div>
+        {/* 전체 투표에 대한 일반 댓글만 따로 쓰고 싶다면 아래 폼 그대로 유지 가능 */}
+        <div className="mt-4">
+          <CommentForm onSubmit={(content) =>
+            handleAddComment({ optionId: null, content })
+          } />
         </div>
+
+        <p className="mt-4 text-xs text-gray-500">
+          이곳에 LLM 기반 찬반 요약 기능이 추가될 예정입니다.
+        </p>
       </div>
     </div>
   );
