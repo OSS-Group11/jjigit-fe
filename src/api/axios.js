@@ -2,7 +2,8 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://holy-cake-0117.jshwjdtkdgml.workers.dev",
+  // Vercel rewrites를 통해 백엔드로 프록시
+  baseURL: "",  // 같은 도메인 사용 (Vercel이 /api를 백엔드로 프록시)
 });
 
 // 요청마다 JWT 토큰 자동 첨부
