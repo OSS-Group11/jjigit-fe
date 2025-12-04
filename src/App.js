@@ -12,7 +12,7 @@ import Header from "./components/Header";
 import SplashComponent from "./components/SplashComponent";
 import HomePage from "./pages/HomePage";
 import CreatePollPage from "./pages/CreatePollPage";
-import PollPage from "./pages/Pollpage"; // 기존 PollDetail 유지
+import PollPage from "./pages/PollPage"; // 기존 PollDetail 유지
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import CommunityPage from "./pages/CommunityPage";
