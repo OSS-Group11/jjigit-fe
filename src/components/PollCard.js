@@ -1,5 +1,4 @@
 // src/components/PollCard.js
-import React from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function PollCard({ poll }) {
@@ -41,15 +40,7 @@ export default function PollCard({ poll }) {
   const leadingOption = getLeadingOption();
 
   /** -------------------------
-   *  3. 썸네일 결정
-   *  - thumbnailUrl (백엔드 저장)
-   *  - thumbnail (샘플 데이터)
-   * ------------------------- */
-  const thumbnail =
-    poll.thumbnailUrl || poll.thumbnail || null;
-
-  /** -------------------------
-   *  4. 기본 라우팅
+   *  3. 기본 라우팅
    * ------------------------- */
   const handleClick = () => navigate(`/poll/${poll.id}`);
 
@@ -59,43 +50,27 @@ export default function PollCard({ poll }) {
       className="
         bg-white rounded-2xl shadow-lg cursor-pointer
         hover:shadow-2xl hover:-translate-y-1
-        transition-all duration-300 overflow-hidden group
+        transition-all duration-300 overflow-hidden group border-2 border-gray-100
       "
     >
-      {/* -----------------------------------
-          썸네일 영역
-      ----------------------------------- */}
-      <div className="relative h-48 bg-gradient-to-br from-purple-400 to-blue-500">
-        {thumbnail ? (
-          <img
-            src={thumbnail}
-            alt={poll.title}
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-white text-6xl">
-            📊
-          </div>
-        )}
-
-        {/* 상태 배지 */}
-        <div className="absolute top-4 right-4">
-          <span
-            className={`px-4 py-1 rounded-full text-sm font-semibold ${
-              poll.status === "active"
-                ? "bg-green-500 text-white"
-                : "bg-gray-600 text-white"
-            }`}
-          >
-            {poll.status === "active" ? "진행 중" : "종료"}
-          </span>
-        </div>
-      </div>
 
       {/* -----------------------------------
           카드 본문
       ----------------------------------- */}
       <div className="p-6">
+        {/* 상태 배지 */}
+        <div className="mb-3">
+          <span
+            className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
+              poll.status === "active"
+                ? "bg-green-100 text-green-700"
+                : "bg-gray-100 text-gray-700"
+            }`}
+          >
+            {poll.status === "active" ? "진행 중" : "종료"}
+          </span>
+        </div>
+
         {/* 제목 */}
         <h3 className="text-xl font-bold text-gray-800 mb-2 line-clamp-2 group-hover:text-purple-600 transition-colors">
           {poll.title}

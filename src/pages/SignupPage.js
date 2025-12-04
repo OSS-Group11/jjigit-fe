@@ -1,5 +1,5 @@
 // src/pages/SignupPage.js
-import React, { useState } from 'react';
+import { useState } from 'react';
 import api from '../api/axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -52,10 +52,12 @@ const SignupPage = () => {
             </label>
             <input
               id="username"
+              name="username"
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
+              autoComplete="username"
               className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 dark:text-white transition"
               placeholder="사용하실 아이디를 입력하세요"
             />
@@ -71,10 +73,12 @@ const SignupPage = () => {
             </label>
             <input
               id="password"
+              name="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              autoComplete="new-password"
               className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 dark:text-white transition"
               placeholder="비밀번호를 입력하세요"
             />
@@ -90,10 +94,12 @@ const SignupPage = () => {
             </label>
             <input
               id="confirmPassword"
+              name="confirmPassword"
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
+              autoComplete="new-password"
               className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 dark:text-white transition"
               placeholder="비밀번호를 다시 입력하세요"
             />

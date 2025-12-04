@@ -1,14 +1,25 @@
 // src/components/Header.js
-import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { isAuthenticated, logout } = useAuth();
 
   const isActive = (path) =>
     location.pathname === path ||
     (path === "/community" && location.pathname.startsWith("/community"));
+
+  const handleAuthAction = () => {
+    if (isAuthenticated) {
+      logout();
+      alert("로그아웃되었습니다.");
+      navigate("/");
+    } else {
+      navigate("/login");
+    }
+  };
 
   return (
     <header className="fixed top-0 w-full z-50 backdrop-blur-md bg-white/70 border-b border-gray-200/50">
@@ -48,14 +59,13 @@ const Header = () => {
           
         </div>
 
-        {/* 우측: 공지사항 / 로그인 */}
+        {/* 우측: 로그인/로그아웃 */}
         <div className="flex items-center gap-6 text-sm">
-
           <button
-            onClick={() => navigate("/login")}
+            onClick={handleAuthAction}
             className="px-5 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-full text-sm font-medium hover:shadow-lg hover:scale-105 transition-all"
           >
-            로그인
+            {isAuthenticated ? "로그아웃" : "로그인"}
           </button>
         </div>
       </div>
