@@ -30,8 +30,9 @@ const PollPage = () => {
         const pollRes = await api.get(`/api/polls/${pollId}`);
         setPoll(pollRes.data);
 
-        const statusRes = await api.get(`/api/polls/${pollId}/status`);
-        setHasVoted(statusRes.data.hasVoted);
+        const statusRes = await api.get(`/api/polls/${pollId}/voted`);
+        console.log("Vote status response:", statusRes.data);
+        setHasVoted(statusRes.data.hasVoted || false);
 
         const commentsRes = await api.get(
           `/api/polls/${pollId}/comments`
