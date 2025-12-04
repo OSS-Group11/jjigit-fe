@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://3.37.253.134",
+  baseURL: "https://holy-cake-0117.jshwjdtkdgml.workers.dev",
 });
 
 // 요청마다 JWT 토큰 자동 첨부
