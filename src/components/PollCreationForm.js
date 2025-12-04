@@ -1,6 +1,7 @@
 // src/components/PollCreationForm.js
 import React, { useState } from "react";
 import { Sparkles, Plus } from "lucide-react";
+import axios from "axios";
 
 const PollCreationForm = ({ onCreatePoll }) => {
   const [pollOptions, setPollOptions] = useState(["", ""]);
@@ -9,6 +10,7 @@ const PollCreationForm = ({ onCreatePoll }) => {
   const [isPublic, setIsPublic] = useState(true); // ⭐ 공개/비공개 (추가 코드 기준)
   const [imageFile, setImageFile] = useState(null); // ⭐ 이미지 업로드
   const [llmSuggestion, setLlmSuggestion] = useState("");
+  const [isLoadingAI, setIsLoadingAI] = useState(false); // AI 로딩 상태
 
   const addOption = () => {
     setPollOptions([...pollOptions, ""]);
@@ -44,8 +46,31 @@ const PollCreationForm = ({ onCreatePoll }) => {
     onCreatePoll(newPollData); // ⭐ 부모로 전달
   };
 
-  const handleLlmSuggest = () => {
-    alert("LLM 주제 제안 로직은 추후 구현 예정입니다.");
+  const handleLlmSuggest = async () => {
+    setIsLoadingAI(true);
+    try {
+      const AI_SERVICE_URL = process.env.REACT_APP_AI_URL ||
+        (window.location.hostname === 'localhost'
+          ? 'http://localhost:8000'
+          : 'https://jjigit-ai.onrender.com');
+
+      const response = await axios.post(`${AI_SERVICE_URL}/api/generate`);
+      const suggestedTopic = response.data.topic;
+
+      // 제안된 주제를 제목에 반영
+      setPollTitle(suggestedTopic);
+      setLlmSuggestion(suggestedTopic);
+
+      // 성공 메시지
+      alert(`AI가 제안한 주제: ${suggestedTopic}`);
+    } catch (error) {
+      console.error("AI 주제 생성 오류:", error);
+      alert(
+        "AI 주제 생성 중 오류가 발생했습니다. AI 서비스가 실행 중인지 확인해주세요."
+      );
+    } finally {
+      setIsLoadingAI(false);
+    }
   };
 
   return (
@@ -90,10 +115,11 @@ const PollCreationForm = ({ onCreatePoll }) => {
           <button
             type="button"
             onClick={handleLlmSuggest}
-            className="w-full mb-8 px-6 py-4 bg-gradient-to-r from-amber-400 to-orange-500 text-white rounded-2xl font-semibold flex items-center justify-center gap-2 hover:shadow-lg hover:scale-[1.02] transition-all"
+            disabled={isLoadingAI}
+            className="w-full mb-8 px-6 py-4 bg-gradient-to-r from-amber-400 to-orange-500 text-white rounded-2xl font-semibold flex items-center justify-center gap-2 hover:shadow-lg hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
           >
-            <Sparkles size={20} />
-            LLM 주제 제안 받기
+            <Sparkles size={20} className={isLoadingAI ? "animate-spin" : ""} />
+            {isLoadingAI ? "AI가 주제를 생성 중..." : "AI 주제 제안 받기"}
           </button>
 
           {/* Options */}
