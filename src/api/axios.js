@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://3.37.253.134:8080",
+  baseURL: "https://3.37.253.134:8080",
 });
 
 // 요청마다 JWT 토큰 자동 첨부
