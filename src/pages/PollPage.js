@@ -53,7 +53,7 @@ const PollPage = () => {
     if (!pollId) return;
 
     const client = new Client({
-      brokerURL: process.env.REACT_APP_WS_URL || "ws://localhost:8080/ws",
+      brokerURL: process.env.REACT_APP_WS_URL || "wss://3.37.253.134:8080/ws",
       reconnectDelay: 500,
     });
 
