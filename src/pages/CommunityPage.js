@@ -236,13 +236,29 @@ function normalizePoll(p) {
     id: p.pollId ?? p.id,
     title: p.title ?? "제목 없음",
     description: p.description ?? "",
-    thumbnailUrl: null, // 백엔드에 이미지 필드 없음
+
     isPublic: p.isPublic ?? true,
-    totalVotes: p.totalVotes ?? 0,
-    createdAt: p.createdAt,
+    createdAt: p.createdAt ?? null,
     author: p.creatorId ? `User ${p.creatorId}` : "익명",
+
+    // ⭐ PollCard에서 필요했던 필드를 여기서 전부 생성
+    status: "active", // 백엔드에는 없음 → 기본 active
+    totalVotes: p.totalVotes ?? 0,
+    totalComments: p.totalComments ?? 0,
+
+    // ⭐ PollCard가 기대하는 votes 형태로 변환
+    votes: convertOptionsToVotes(p.options),
+
+    // PollCard에서 옵션 제목이 필요할 수 있음
     options: p.options ?? [],
-    status: "active", // 백엔드에 status 필드가 없으면 기본값
-    totalComments: 0, // 백엔드 응답에 없는 필드
   };
+}
+
+function convertOptionsToVotes(options = []) {
+  const obj = {};
+  options.forEach((opt) => {
+    if (!opt.optionText) return;
+    obj[opt.optionText] = opt.voteCount ?? 0;
+  });
+  return obj;
 }
