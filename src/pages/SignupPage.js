@@ -14,7 +14,7 @@ const SignupPage = () => {
 
     if (password !== confirmPassword) {
       alert('비밀번호가 일치하지 않습니다.');
-      return;
+      return; 
     }
 
     try {
@@ -82,6 +82,9 @@ const SignupPage = () => {
               className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 dark:text-white transition"
               placeholder="비밀번호를 입력하세요"
             />
+            <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">
+              비밀번호는 8자리 이상이어야 합니다.
+            </p>
           </div>
 
           {/* Confirm Password */}
@@ -108,7 +111,13 @@ const SignupPage = () => {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full py-3 bg-blue-600 text-white font-bold rounded-lg shadow-lg hover:bg-blue-700 transition text-lg"
+            className="
+              w-full py-3
+              bg-purple-600 text-white font-bold
+              rounded-lg shadow-lg
+              hover:bg-purple-700
+              transition duration-150 text-lg
+            "          
           >
             회원가입 하기
           </button>

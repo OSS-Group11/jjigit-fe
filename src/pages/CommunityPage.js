@@ -62,7 +62,12 @@ export default function CommunityPage() {
     navigate("/create");
   };
 
-  const handleLLMTopic = () => {
+  const handleLLMTopic = () => {const token = localStorage.getItem("jjigit-token");
+    if (!token) {
+      alert("투표를LLM 기반 주제 추천 기능을 사용하려면 로그인이 필요합니다.");
+      navigate("/login");
+      return;
+    }
     navigate("/create?with=llm-topic");
   };
 
@@ -142,6 +147,7 @@ export default function CommunityPage() {
                 >
                   LLM 주제 추천
                 </button>
+
                 <button
                   onClick={handleCreate}
                   className="px-4 py-2 rounded-full bg-purple-600 text-white text-sm hover:bg-purple-700"
