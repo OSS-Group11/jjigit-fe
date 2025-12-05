@@ -47,29 +47,41 @@ const PollPage = () => {
  };
 
 
-  // ⭐ 투표 + 댓글 불러오기
-  useEffect(() => {
-    const fetchPoll = async () => {
-      try {
-        const pollRes = await api.get(`/api/polls/${pollId}`);
-        setPoll(pollRes.data);
+  // ⭐ 투표 + 댓글 불러오기
+  useEffect(() => {
+    const fetchPoll = async () => {
+      try {
+        // 1) 투표 기본 정보 (공개 API)
+        const pollRes = await api.get(`/api/polls/${pollId}`);
+        setPoll(pollRes.data);
 
+        // 2) 로그인 사용자만 voted API 호출
+        const token = localStorage.getItem("jjigit-token");
+        if (token) {
+          try {
+            const statusRes = await api.get(`/api/polls/${pollId}/voted`);
+            setHasVoted(statusRes.data.hasVoted || false);
+          } catch (e) {
+            console.error("voted API 오류(무시해도 됨):", e);
+            // 로그인 중이지만 voted API 에러는 UI 영향을 주지 않으므로 alert 금지
+          }
+        } else {
+          setHasVoted(false); // 비로그인 = 투표 안 함
+        }
 
-        const statusRes = await api.get(`/api/polls/${pollId}/voted`);
-        setHasVoted(statusRes.data.hasVoted || false);
+        // 3) 댓글 목록 조회 (공개 API)
+        const commentsRes = await api.get(`/api/polls/${pollId}/comments`);
+        setComments(commentsRes.data.comments || []);
 
+      } catch (e) {
+        console.error("poll 데이터 불러오기 오류:", e);
+        alert("투표 정보를 불러오는 중 오류가 발생했습니다."); // 이 alert는 정상적으로 한 번만 뜸
+      }
+    };
 
-        const commentsRes = await api.get(`/api/polls/${pollId}/comments`);
-        setComments(commentsRes.data.comments || []);
-      } catch (e) {
-        console.error(e);
-        alert("투표 정보를 불러오는 중 오류가 발생했습니다.");
-      }
-    };
+    if (pollId) fetchPoll();
+  }, [pollId]);
 
-
-    if (pollId) fetchPoll();
-  }, [pollId]);
 
 
   // ⭐ 실시간 STOMP 업데이트
@@ -133,23 +145,27 @@ const PollPage = () => {
     <div className="px-6 py-10 flex flex-col items-center">
 
 
-      {/* 제목 영역 */}
-      <div className="w-full max-w-3xl mb-6 text-center mx-auto">
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-3xl font-bold">{poll.title}</h1>
-          <button
-            onClick={handleShare}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition"
-          >
-            투표 공유하기
-          </button>
-        </div>
+      {/* 제목 영역 */}
+      <div className="w-full max-w-3xl mb-3 mx-auto text-center">
+        {/* 제목 */}
+        <h1 className="text-4xl font-bold mb-3">{poll.title}</h1>
 
+        {/* 서브 설명 */}
+        {poll.description && (
+          <p className="text-sm text-gray-600 mb-4">{poll.description}</p>
+        )}
 
-        {poll.description && (
-          <p className="text-sm text-gray-600">{poll.description}</p>
-        )}
-      </div>
+        {/* 공유 버튼을 제목보다 아래 + 오른쪽 정렬 */}
+        <div className="flex justify-end">
+          <button
+            onClick={handleShare}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition"
+          >
+            투표 공유하기
+          </button>
+        </div>
+      </div>
+
 
 
       {/* 본문 (투표/결과) */}
