@@ -3,12 +3,18 @@ import api from '../api/axios';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useLocation } from "react-router-dom";
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useAuth();
+
+  const searchParams = new URLSearchParams(location.search);
+  const redirectTo = searchParams.get("redirectTo") || "/";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,7 +31,9 @@ const LoginPage = () => {
       login(token, { userId });
 
       alert('로그인 성공!');
-      navigate('/');
+      // 🔥 로그인 후 원래 가려던 페이지로 이동
+      navigate(redirectTo);
+      // 로그인 성공 시
 
     } catch (error) {
       console.error('Login failed:', error);
@@ -81,7 +89,13 @@ const LoginPage = () => {
           {/* 로그인 버튼 */}
           <button
             type="submit"
-            className="w-full py-3 bg-blue-600 text-white font-bold rounded-lg shadow-lg hover:bg-blue-700 transition duration-150 text-lg"
+            className="
+              w-full py-3
+              bg-purple-600 text-white font-bold
+              rounded-lg shadow-lg
+              hover:bg-purple-700
+              transition duration-150 text-lg
+            "
           >
             로그인하기
           </button>

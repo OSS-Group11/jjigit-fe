@@ -1,14 +1,16 @@
 // src/components/Layout.js
 import React from "react";
 import Header from "./Header";
+import { Outlet } from "react-router-dom";
 
-function Layout({ children }) {
+function Layout() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
 
-      <main className="flex-1 pt-16">
-        {children}
+      {/* ⭐ 라우트 컴포넌트가 이 위치에 렌더링됨 */}
+      <main className="flex-1 pt-16 px-4">
+        <Outlet />
       </main>
 
       <footer className="app-footer text-center py-6 text-sm text-gray-500">

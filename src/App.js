@@ -46,22 +46,20 @@ function App() {
   }
 
   return (
-    <AuthProvider>
+        <AuthProvider>
       <BrowserRouter>
-        <Layout>
-          <Routes>
-            {/* 기본 페이지 */}
+
+        {/* Layout이 감싸지 말아야 하는 페이지들 */}
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+
+          {/* 나머지는 Layout으로 감싸기 */}
+          <Route element={<Layout />}>
             <Route path="/" element={<HomePage />} />
             <Route path="/community" element={<CommunityPage />} />
-
-            {/* Poll 상세 */}
             <Route path="/poll/:pollId" element={<PollPage />} />
 
-            {/* 로그인 / 회원가입 */}
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignupPage />} />
-
-            {/* 투표 생성 → 보호됨 */}
             <Route
               path="/create"
               element={
@@ -70,11 +68,10 @@ function App() {
                 </ProtectedRoute>
               }
             />
+          </Route>
 
-            {/* 404 */}
-            <Route path="*" element={<h1>404 Page Not Found</h1>} />
-          </Routes>
-        </Layout>
+          <Route path="*" element={<h1>404 Page Not Found</h1>} />
+        </Routes>
       </BrowserRouter>
     </AuthProvider>
   );

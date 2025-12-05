@@ -29,7 +29,15 @@ const HomePage = () => {
     navigate("/create");
   };
 
-  const handleLLMTopic = () => navigate("/create?with=llm-topic");
+  const handleLLMTopic = () => {
+    const token = localStorage.getItem("jjigit-token");
+    if (!token) {
+      alert("LLM 기반 주제 추천 기능을 사용하려면 로그인이 필요합니다.");
+      navigate("/login");
+      return;
+    }
+    navigate("/create?with=llm-topic");
+  };
 
   if (isLoading) return <SplashComponent text="JJIGIT" />;
 
