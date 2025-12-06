@@ -28,12 +28,16 @@ const Header = () => {
 
         {/* 좌측: 홈/커뮤니티 버튼 + JJIGIT 로고 */}
         <div className="flex items-center gap-4">
-          {/* 기존 JJIGIT 로고 유지 */}
-          <Link
-            to="/"
-            className="text-2xl font-bold tracking-wider bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent"
-          >
-            JJIGIT
+          {/* 로고 이미지 + 텍스트 */}
+          <Link to="/" className="flex items-center gap-2">
+            <img
+              src="/images/logo.png"
+              alt="JJIGIT Logo"
+              className="h-8 w-8 object-contain"
+            />
+            <span className="text-2xl font-bold tracking-wider bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+              JJIGIT
+            </span>
           </Link>
           
           {/* 홈 / 커뮤니티 */}
