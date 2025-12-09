@@ -1,6 +1,6 @@
 # Contributing to Jjigit
 
-Thank you for your interest in contributing! Jjigit is an open-source backend service under the MIT License.  
+Thank you for your interest in contributing! Jjigit is an open-source backend service under the Apache 2.0 License.  
 This document describes the essential rules for contributing, including how to create Issues, submit Pull Requests, follow the branching model, and understand the maintainer review process.
 
 Repository: **https://github.com/OSS-Group11/jjigit-be**
