@@ -228,29 +228,19 @@ function getExamplePolls() {
   ];
 }
 
-/* ---------- 헬퍼: API에서 온 poll 구조 정규화 ---------- */
 function normalizePoll(p) {
-  // 백엔드 응답 필드명을 프론트엔드 형식으로 매핑
-  // 백엔드 응답: { pollId, title, isPublic, options: [{optionId, optionText, optionOrder, voteCount}], creatorId, createdAt, totalVotes }
   return {
-    id: p.pollId ?? p.id,
-    title: p.title ?? "제목 없음",
-    description: p.description ?? "",
-
-    isPublic: p.isPublic ?? true,
-    createdAt: p.createdAt ?? null,
+    id: p.pollId || p.id,
+    title: p.title || "제목 없음",
+    description: p.description || "",
+    isPublic: p.isPublic !== undefined ? p.isPublic : true,
+    createdAt: p.createdAt || null,
     author: p.creatorId ? `User ${p.creatorId}` : "익명",
-
-    // ⭐ PollCard에서 필요했던 필드를 여기서 전부 생성
-    status: "active", // 백엔드에는 없음 → 기본 active
-    totalVotes: p.totalVotes ?? 0,
-    totalComments: p.totalComments ?? 0,
-
-    // ⭐ PollCard가 기대하는 votes 형태로 변환
+    status: "active",
+    totalVotes: p.totalVotes || 0,
+    totalComments: p.totalComments || 0,
     votes: convertOptionsToVotes(p.options),
-
-    // PollCard에서 옵션 제목이 필요할 수 있음
-    options: p.options ?? [],
+    options: p.options || [],
   };
 }
 

@@ -121,18 +121,14 @@ export default function PollCard({ poll }) {
 
         {/* 투표 & 댓글 수 */}
         <div className="flex items-center gap-4 mt-3 text-sm">
-          {poll.totalVotes !== undefined && (
-            <span className="flex items-center gap-1 text-purple-600 font-medium">
-              <span className="text-lg">✓</span>
-              {poll.totalVotes}명 참여
-            </span>
-          )}
-          {poll.totalComments !== undefined && (
-            <span className="flex items-center gap-1 text-gray-600">
-              <span className="text-lg">💬</span>
-              {poll.totalComments}개 댓글
-            </span>
-          )}
+          <span className="flex items-center gap-1 text-purple-600 font-medium">
+            <span className="text-lg">✓</span>
+            {poll.totalVotes || 0}명 참여
+          </span>
+          <span className="flex items-center gap-1 text-gray-600">
+            <span className="text-lg">💬</span>
+            {poll.totalComments || 0}개 댓글
+          </span>
         </div>
 
         {/* 공개/비공개 표시 (기존 기능 유지) */}
